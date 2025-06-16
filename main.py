@@ -1,5 +1,5 @@
 from fastapi import FastAPI , HTTPException , Depends
-from pydantic import BaseModel, BaseModelimport 
+from pydantic import BaseModel
 import mysql.connector
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -45,11 +45,11 @@ app.add_middleware(
 
 def get_db_connection():
     connection = mysql.connector.connect(**db_config)
-    return Connection
+    return connection
 
 #Ruta para el login
 @app.post("/login")
-def login(login_request: LoginRequest):
+def login(login_request: Loginrequest):
     print(f"Received email: {login_request.email}")
     print(f"received password: {login_request.password}")
 
@@ -66,10 +66,10 @@ def login(login_request: LoginRequest):
     if user:
         return {"mesage": "Login successful", "user": user}
     else:
-        raise HTTPException(status_code=401 detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
     
 
-  
+#Ruta para el registro
 @app.post("/register")
 def register(register_request: RegisterRequest):
     print(f"Register attempt with email: {register_request.email}")
