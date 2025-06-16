@@ -79,7 +79,7 @@ def register(register_request: RegisterRequest):
 
     #Verificar si el email ya existe
     check_query = "Select * from loguin Where email = %s"
-    cursor.execute(check_query, (register_request.email))
+    cursor.execute(check_query, (register_request.email,))
     existing_user = cursor.fetchone()
 
     if existing_user:
@@ -139,7 +139,7 @@ def delete_user(email: str):
     else:
         raise HTTPException(status_code=500, detail="Delete operation failed")
     
-#Ruta de prueba
+#Ruta para obtener todos los usuarios
 @app.get("/users")
 def get_all_users():
     connection = get_db_connection()
@@ -149,7 +149,8 @@ def get_all_users():
         query = "Select * from loguin"
         cursor.execute(query)
         users = cursor.fetchall()
-        return {"users"; users}
+
+        return {"users": users}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -170,7 +171,7 @@ def update_user(update_request: UpdateRequest):
         existing_user = cursor.fetchone()
 
         if not existing_user:
-            raise HTTPException(status_code=400 , detail="Usuario no encontrado")
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
         
         #Verificar si el nuevo email ya esta en uso
         if update_request.current_email != update_request.new_email:
